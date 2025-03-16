@@ -1,5 +1,5 @@
 export interface ITaskTable {
-  id: string;
+  id: number;
   user_id: string;
   title: string;
   status: "A fazer" | "Pausado" | "Em progresso" | "Finalizado";

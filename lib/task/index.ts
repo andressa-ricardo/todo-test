@@ -68,8 +68,6 @@ export async function getTasks(where: ITaskTableQuery): Promise<ITaskTable[]> {
     .eq("user_id", where.user_id)
     .order("created_at", { ascending: true });
 
-  console.log({ data, error, where });
-
   if (error) {
     console.error("Erro ao buscar tasks:", error.message);
     return [];

@@ -1,11 +1,11 @@
-// app/api/tasks/[id].ts
+// app/api/tasks/[id]/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
 import { updateTask, deleteTask, findTask } from "@/lib/task";
 import { createClient } from "@/utils/supabase/server";
 
 // Atualiza a tarefa a partir de seu ID
-export async function PUT(
+export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
@@ -24,7 +24,7 @@ export async function PUT(
   const { id: userId } = user;
 
   const task = await findTask({
-    id: id,
+    id: Number(id),
     user_id: userId,
   });
 
@@ -58,7 +58,7 @@ export async function DELETE(
   const { id: userId } = user;
 
   const task = await findTask({
-    id: id,
+    id: Number(id),
     user_id: userId,
   });
 
@@ -66,7 +66,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Task não encontrada" }, { status: 404 });
 
   await deleteTask({
-    id: id,
+    id: Number(id),
     user_id: userId,
   });
 
