@@ -12,7 +12,7 @@ export function TodoDroppableContainer({
   return (
     <div
       ref={setNodeRef}
-      className="w-[9rem] min-h-[18rem] border rounded-sm p-2"
+      className="min-h-[18rem] border rounded-sm p-2"
     >
       <h2 className="font-semibold mb-2">{id}</h2>
       {children}

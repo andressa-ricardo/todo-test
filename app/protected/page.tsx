@@ -14,9 +14,14 @@ export default async function ProtectedPage() {
   }
 
   return (
-    <div>
-      <h1 className="text-4xl font-bold">Todo-app</h1>
-      <TodoApp />
+    <div className="w-full">
+      <h1 className="text-4xl font-bold text-center mb-6 sm:text-5xl md:text-6xl">
+        Todo-app
+      </h1>
+
+      <div className="w-full max-w-4xl mx-auto">
+        <TodoApp />
+      </div>
     </div>
   );
 }

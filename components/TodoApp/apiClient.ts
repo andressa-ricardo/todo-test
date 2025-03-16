@@ -21,14 +21,11 @@ export async function createTask(title: string) {
 }
 
 // Função para atualizar o status da task
-export async function updateTaskStatus(
-  id: number,
-  status: ITaskTable["status"]
-) {
-  await fetch(`/api/tasks/${id}`, {
+export async function updateTask(task: ITaskTable) {
+  await fetch(`/api/tasks/${task.id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({ ...task }),
   });
 }
 
