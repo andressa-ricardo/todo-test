@@ -5,6 +5,7 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { TodoDroppableContainer } from "./TodoDroppableContainer";
 import { TaskCard } from "./TaskCard";
 import { ITaskTable } from "@/lib/task/ITaskTable";
+import { createTask, fetchTasks, updateTaskStatus } from "./apiClient";
 
 const statuses: ITaskTable["status"][] = [
   "A fazer",
@@ -12,40 +13,6 @@ const statuses: ITaskTable["status"][] = [
   "Em progresso",
   "Finalizado",
 ];
-
-// Função para buscar as tasks da API
-async function fetchTasks(): Promise<ITaskTable[]> {
-  const res = await fetch("/api/tasks");
-  const { data } = await res.json();
-  return data;
-}
-
-// Função para criar uma nova task
-async function createTask(title: string) {
-  const res = await fetch("/api/tasks", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title }),
-  });
-
-  const data = await res.json();
-
-  return data.task;
-}
-
-// Função para atualizar o status da task
-async function updateTaskStatus(id: number, status: ITaskTable["status"]) {
-  await fetch(`/api/tasks/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status }),
-  });
-}
-
-// Função para deletar uma task
-async function deleteTask(id: number) {
-  await fetch(`/api/tasks/${id}`, { method: "DELETE" });
-}
 
 export function TodoApp() {
   const [tasks, setTasks] = useState<ITaskTable[]>([]);
