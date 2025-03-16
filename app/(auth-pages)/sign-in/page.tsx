@@ -25,22 +25,21 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
 
         <div className="flex justify-between items-center">
           <Label htmlFor="password">Senha</Label>
-          <Link
-            className="text-xs text-foreground underline"
-            href="/forgot-password"
-          >
-            Esqueceu sua senha?
-          </Link>
         </div>
 
         <Input
           type="password"
           name="password"
-          placeholder="Your password"
+          placeholder="Sua senha"
           required
         />
-
-        <SubmitButton pendingText="Signing In..." formAction={signInAction}>
+        <Link
+          className="text-xs text-foreground underline"
+          href="/forgot-password"
+        >
+          Esqueceu sua senha?
+        </Link>
+        <SubmitButton pendingText="Acessando..." formAction={signInAction}>
           Acessar conta
         </SubmitButton>
 

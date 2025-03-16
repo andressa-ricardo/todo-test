@@ -34,7 +34,7 @@ export const signUpAction = async (formData: FormData) => {
     return encodedRedirect(
       "success",
       "/sign-up",
-      "Thanks for signing up! Please check your email for a verification link.",
+      "Obrigado por se inscrever! Por favor, verifique seu e-mail para confirmar seu cadastro.",
     );
   }
 };
@@ -86,7 +86,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
   return encodedRedirect(
     "success",
     "/forgot-password",
-    "Check your email for a link to reset your password.",
+    "Verifique seu e-mail para obter um link para redefinir sua senha.",
   );
 };
 

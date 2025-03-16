@@ -35,11 +35,11 @@ export default async function Signup(props: {
           <Input
             type="password"
             name="password"
-            placeholder="Your password"
+            placeholder="Sua senha"
             minLength={6}
             required
           />
-          <SubmitButton formAction={signUpAction} pendingText="Signing up...">
+          <SubmitButton formAction={signUpAction} pendingText="Acessando...">
             Criar conta
           </SubmitButton>
 
