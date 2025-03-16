@@ -10,7 +10,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   const { id } = params;
-  const { status, start_time, end_time } = await req.json();
+  const updateData = await req.json();
 
   const supabase = await createClient();
 
@@ -24,22 +24,16 @@ export async function PUT(
   const { id: userId } = user;
 
   const task = await findTask({
-    taskId: id,
-    userId: userId,
+    id: id,
+    user_id: userId,
   });
 
   if (!task)
     return NextResponse.json({ error: "Task não encontrada" }, { status: 404 });
 
-  if (start_time == undefined && end_time == undefined && status == undefined)
-    return NextResponse.json({ message: "Tarefa atualizada", task });
-
   await updateTask({
-    id: task.id,
-    userId: userId,
-    status: status,
-    endTime: end_time,
-    startTime: start_time,
+    ...task,
+    ...updateData,
   });
 
   return NextResponse.json({ message: "Tarefa atualizada", task });
@@ -64,16 +58,16 @@ export async function DELETE(
   const { id: userId } = user;
 
   const task = await findTask({
-    taskId: id,
-    userId: userId,
+    id: id,
+    user_id: userId,
   });
 
   if (!task)
     return NextResponse.json({ error: "Task não encontrada" }, { status: 404 });
 
   await deleteTask({
-    taskId: id,
-    userId: userId,
+    id: id,
+    user_id: userId,
   });
 
   return NextResponse.json({ message: "Tarefa deletada!" });
