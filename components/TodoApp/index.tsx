@@ -1,78 +1,90 @@
-// components/tasks/index.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { TodoDroppableContainer } from "./TodoDroppableContainer";
+import { TaskCard } from "./TaskCard";
+import { ITaskTable } from "@/lib/task/ITaskTable";
 
-import { DndContext, closestCorners, DragEndEvent } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { Column } from "./Column";
-
-interface Task {
-  id: string;
-  title: string;
-  status: "A fazer" | "Pausado" | "Em progresso" | "Finalizado";
-}
-
-const statuses = ["A fazer", "Pausado", "Em progresso", "Finalizado"];
+const statuses: ITaskTable["status"][] = [
+  "A fazer",
+  "Pausado",
+  "Em progresso",
+  "Finalizado",
+];
 
 export function TodoApp() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<ITaskTable[]>([
+    {
+      id: "1",
+      title: "Fazer relatório",
+      status: "A fazer",
+      created_at: new Date(),
+      user_id: "123123",
+    },
+  ]);
 
-  useEffect(() => {
-    async function fetchTasks() {
-      const res = await fetch("/api/tasks");
-      const data = await res.json();
-      setTasks(data.data);
-    }
+  const [newTaskTitle, setNewTaskTitle] = useState("");
 
-    fetchTasks();
-  }, []);
-
-  async function updateTaskStatus(id: string, newStatus: Task["status"]) {
-    await fetch(`/api/tasks/${id}`, {
-      method: "PUT",
-      body: JSON.stringify({ status: newStatus }),
-      headers: { "Content-Type": "application/json" },
-    });
+  function onDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over) return;
 
     setTasks((prev) =>
       prev.map((task) =>
-        task.id === id ? { ...task, status: newStatus } : task
+        task.id === active.id.toString()
+          ? { ...task, status: over.id.toString() as ITaskTable["status"] }
+          : task
       )
     );
   }
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
+  function addTask() {
+    if (!newTaskTitle.trim()) return;
 
-    if (!over) return;
+    const newTask: ITaskTable = {
+      id: String(tasks.length + 1),
+      title: newTaskTitle,
+      status: "A fazer",
+      user_id: "12093813",
+      created_at: new Date(),
+    };
 
-    const draggedTaskId = active.id as string;
-    const newStatus = over.id as Task["status"];
-
-    const task = tasks.find((t) => t.id === draggedTaskId);
-    if (task && task.status !== newStatus) {
-      updateTaskStatus(draggedTaskId, newStatus);
-    }
+    setTasks((prev) => [...prev, newTask]);
+    setNewTaskTitle(""); // Limpar o campo de input
   }
 
   return (
-    <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-      <div className="grid grid-cols-4 gap-4 p-6">
+    <DndContext onDragEnd={onDragEnd}>
+      {/* Área de entrada para adicionar novas tarefas */}
+      <div className="flex gap-2 mb-4">
+        <input
+          type="text"
+          value={newTaskTitle}
+          onChange={(e) => setNewTaskTitle(e.target.value)}
+          placeholder="Digite uma nova tarefa..."
+          className="border rounded p-2 w-full"
+        />
+        <button
+          onClick={addTask}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Adicionar
+        </button>
+      </div>
+
+      {/* Área do Kanban */}
+      <div className="grid grid-cols-4 gap-2 mt-4">
         {statuses.map((status) => (
-          <SortableContext
-            key={status}
-            items={tasks}
-            strategy={verticalListSortingStrategy}
-          >
-            <Column
-              status={status}
-              tasks={tasks.filter((t) => t.status === status)}
-            />
-          </SortableContext>
+          <TodoDroppableContainer id={status} key={status}>
+            {tasks
+              .filter((task) => task.status === status)
+              .map((task) => (
+                <TaskCard key={task.id} id={task.id}>
+                  {task.title}
+                </TaskCard>
+              ))}
+          </TodoDroppableContainer>
         ))}
       </div>
     </DndContext>

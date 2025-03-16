@@ -1,28 +1,28 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
-interface TaskCardProps {
-  task: { id: string; title: string; status: string };
-}
-
-export function TaskCard({ task }: TaskCardProps) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: "unique-id",
-  });
+export function TaskCard({
+  id,
+  children,
+}: {
+  id: string;
+  children: React.ReactNode;
+}) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
 
   const style = {
     transform: CSS.Translate.toString(transform),
   };
 
   return (
-    <div
-      className="border p-3 shadow-md rounded-md mb-2 cursor-grab bg-slate-100"
+    <button
       ref={setNodeRef}
       style={style}
       {...listeners}
       {...attributes}
+      className="bg-blue-500 text-white p-2 rounded mb-2 cursor-grab"
     >
-      <p className="text-sm font-medium text-black">{task.title}</p>
-    </div>
+      {children}
+    </button>
   );
 }
