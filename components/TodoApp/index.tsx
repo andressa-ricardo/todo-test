@@ -100,6 +100,11 @@ export function TodoApp() {
           type="text"
           value={newTaskTitle}
           onChange={(e) => setNewTaskTitle(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              addTask();
+            }
+          }}
           placeholder="Digite uma nova tarefa..."
           className="border rounded p-2 w-full"
         />
