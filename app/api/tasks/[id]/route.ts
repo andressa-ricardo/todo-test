@@ -7,17 +7,11 @@ import { createClient } from "@/utils/supabase/server";
 // Atualiza a tarefa a partir de seu ID
 export async function PATCH(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const params = await context.params;
+  const { id } = await params;
 
-  if (!params?.id) {
-    return NextResponse.json({ error: "ID é obrigatório" }, { status: 400 });
-  }
-
-  const { id } = params;
   const updateData = await req.json();
-
   const supabase = await createClient();
 
   const {
@@ -50,15 +44,10 @@ export async function PATCH(
 // Deleta a tarefa a partir de seu ID
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } 
 ) {
-  const params = await context.params;
+  const { id } = await params;
 
-  if (!params?.id) {
-    return NextResponse.json({ error: "ID é obrigatório" }, { status: 400 });
-  }
-
-  const { id } = params;
   const supabase = await createClient();
 
   const {
