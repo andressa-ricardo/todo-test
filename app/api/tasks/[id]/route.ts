@@ -7,8 +7,14 @@ import { createClient } from "@/utils/supabase/server";
 // Atualiza a tarefa a partir de seu ID
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
+  const params = await context.params;
+
+  if (!params?.id) {
+    return NextResponse.json({ error: "ID é obrigatório" }, { status: 400 });
+  }
+
   const { id } = params;
   const updateData = await req.json();
 
@@ -18,8 +24,9 @@ export async function PATCH(
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user)
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { id: userId } = user;
 
@@ -28,8 +35,9 @@ export async function PATCH(
     user_id: userId,
   });
 
-  if (!task)
+  if (!task) {
     return NextResponse.json({ error: "Task não encontrada" }, { status: 404 });
+  }
 
   await updateTask({
     ...task,
