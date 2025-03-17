@@ -50,18 +50,24 @@ export async function PATCH(
 // Deleta a tarefa a partir de seu ID
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  const { id } = params;
+  const params = await context.params;
 
+  if (!params?.id) {
+    return NextResponse.json({ error: "ID é obrigatório" }, { status: 400 });
+  }
+
+  const { id } = params;
   const supabase = await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user)
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { id: userId } = user;
 
@@ -70,8 +76,9 @@ export async function DELETE(
     user_id: userId,
   });
 
-  if (!task)
+  if (!task) {
     return NextResponse.json({ error: "Task não encontrada" }, { status: 404 });
+  }
 
   await deleteTask({
     id: Number(id),
